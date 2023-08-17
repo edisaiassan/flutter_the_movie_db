@@ -1,5 +1,5 @@
 import 'package:simple_the_movie_db/domain/entities/movie.dart';
-import 'package:simple_the_movie_db/infrastructure/datasources/models/moviedb/movie_moviedb.dart';
+import 'package:simple_the_movie_db/infrastructure/models/moviedb/movie_moviedb.dart';
 
 class MovieMapper {
   static Movie movieDBToEntity(MovieMovieDB moviedb) => Movie(
