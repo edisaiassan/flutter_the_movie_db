@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:simple_the_movie_db/presentation/providers/movies/movies_providers.dart';
+import 'package:simple_the_movie_db/presentation/widgets/shared/custom_appbar.dart';
+import 'package:simple_the_movie_db/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   static const name = 'home-screen';
@@ -9,9 +11,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: const HomeView(),
+    return const Scaffold(
+      body: HomeView(),
     );
   }
 }
@@ -36,14 +37,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
     if(nowPlayingMovies.isEmpty) return const Center(child: CircularProgressIndicator());
 
-    return ListView.builder(
-      itemCount: nowPlayingMovies.length,
-      itemBuilder: (context, index) {
-        final movie = nowPlayingMovies[index];
-        return ListTile(
-          title: Text(movie.title),
-        );
-      },
+    return Column(
+      children: [
+        const CustomAppBar(),
+        MoviesSlideshow(movies: nowPlayingMovies),
+      ],
     );
   }
 }
