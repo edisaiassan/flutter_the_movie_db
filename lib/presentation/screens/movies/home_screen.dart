@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:simple_the_movie_db/presentation/providers/movies/movies_providers.dart';
-import 'package:simple_the_movie_db/presentation/widgets/shared/custom_appbar.dart';
+import 'package:simple_the_movie_db/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:simple_the_movie_db/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -33,14 +33,15 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    //final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final moviesSlideshow = ref.watch(moviesSlideshowProvider);
 
-    if(nowPlayingMovies.isEmpty) return const Center(child: CircularProgressIndicator());
+    if(moviesSlideshow.isEmpty) return const Center(child: CircularProgressIndicator());
 
     return Column(
       children: [
         const CustomAppBar(),
-        MoviesSlideshow(movies: nowPlayingMovies),
+        MoviesSlideshow(movies: moviesSlideshow),
       ],
     );
   }
