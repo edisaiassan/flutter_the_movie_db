@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_the_movie_db/domain/entities/movie.dart';
 import 'package:simple_the_movie_db/helpers/human_formats.dart';
@@ -55,7 +56,7 @@ class _MovieHorizontalListViewState extends State<MovieHorizontalListView> {
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return _Slide(movie: widget.movies[index]);
+                return FadeInRight(child: _Slide(movie: widget.movies[index]));
               },
             ),
           ),

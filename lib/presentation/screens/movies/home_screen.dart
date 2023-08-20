@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:simple_the_movie_db/presentation/providers/movies/movies_providers.dart';
 import 'package:simple_the_movie_db/presentation/providers/movies/movies_slideshow_provider.dart';
+import 'package:simple_the_movie_db/presentation/providers/providers.dart';
 import 'package:simple_the_movie_db/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -37,15 +38,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
+
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
     final moviesSlideshow = ref.watch(moviesSlideshowProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
-
-    if (moviesSlideshow.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     return CustomScrollView(
       slivers: [
@@ -55,8 +55,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             MoviesSlideshow(movies: moviesSlideshow),
             MovieHorizontalListView(
               movies: nowPlayingMovies,
-              title: 'Título',
-              subTitle: 'Subtítulo',
+              title: 'En cartelera',
               loadNextPage: () =>
                   ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
             ),
