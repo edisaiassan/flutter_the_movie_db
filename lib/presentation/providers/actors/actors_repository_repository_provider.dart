@@ -3,5 +3,5 @@ import 'package:simple_the_movie_db/infrastructure/datasources/actor_moviedb_dat
 import 'package:simple_the_movie_db/infrastructure/repositories/actor_repository_impl.dart';
 
 final actorRepositoryProvider = Provider((ref) {
-  return ActorRepositoryImpl(ActorMovieDbDatasource()); //Cargamos las funciones originales
+  return ActorRepositoryImpl(ActorMovieDbDatasource());
 });
