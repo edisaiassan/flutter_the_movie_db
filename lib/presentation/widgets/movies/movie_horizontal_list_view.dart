@@ -1,7 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:simple_the_movie_db/domain/entities/movie.dart';
 import 'package:simple_the_movie_db/helpers/human_formats.dart';
+import 'package:simple_the_movie_db/presentation/screens/movies/movie_screen.dart';
 
 class MovieHorizontalListView extends StatefulWidget {
   final List<Movie> movies;
@@ -94,7 +96,15 @@ class _Slide extends StatelessWidget {
                       ),
                     );
                   }
-                  return child;
+                  return InkWell(
+                    onTap: () => context.pushNamed(
+                      MovieScreen.name,
+                      pathParameters: {
+                        'id': '${movie.id}'
+                      }
+                    ),
+                    child: child,
+                  );
                 },
               ),
             ),

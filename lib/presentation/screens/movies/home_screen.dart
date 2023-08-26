@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:simple_the_movie_db/presentation/providers/movies/movies_providers.dart';
-import 'package:simple_the_movie_db/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:simple_the_movie_db/presentation/providers/providers.dart';
 import 'package:simple_the_movie_db/presentation/widgets/widgets.dart';
 
