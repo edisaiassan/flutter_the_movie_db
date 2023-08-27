@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:simple_the_movie_db/domain/entities/movie.dart';
 import 'package:simple_the_movie_db/presentation/delegates/search_movie_delegate.dart';
 import 'package:simple_the_movie_db/presentation/providers/providers.dart';
+import 'package:simple_the_movie_db/presentation/screens/screens.dart';
 
 class CustomAppBar extends ConsumerWidget {
   const CustomAppBar({super.key});
@@ -17,10 +20,20 @@ class CustomAppBar extends ConsumerWidget {
         IconButton(
           onPressed: () {
             final movieRepository = ref.read(movieRepositoryProvider);
-            showSearch(
+            showSearch<Movie?>(
               context: context,
               delegate: SearchMovieDelegate(
-                  searchMovie: movieRepository.searchMovies),
+                  searchMovies: movieRepository.searchMovies),
+            ).then(
+              (movie) {
+                if (movie == null) return;
+                context.pushNamed(
+                  MovieScreen.name,
+                  pathParameters: {
+                    'id': movie.id.toString(),
+                  },
+                );
+              },
             );
           },
           icon: const Icon(Icons.search_rounded),

@@ -1,14 +1,35 @@
+import 'dart:async';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_the_movie_db/domain/entities/movie.dart';
 
-//Creamos un typedef que nos permita recibir un método con un valor String
 typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
-  final SearchMoviesCallback searchMovie;
+  final SearchMoviesCallback searchMovies;
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  Timer? _debounceTimer;
 
-  SearchMovieDelegate({required this.searchMovie});
+  SearchMovieDelegate({required this.searchMovies});
+
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
+  void _onQueryChanged(String query) {
+    if(_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      if(query.isEmpty) {
+        debouncedMovies.add([]);
+        return;
+      }
+
+      final movies = await searchMovies(query);
+      debouncedMovies.add(movies);
+    });
+  }
 
   @override
   String get searchFieldLabel => 'Buscar Película';
@@ -29,7 +50,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      onPressed: () => close(context, null),
+      onPressed: () {
+        clearStreams();
+        close(context, null);
+      },
       tooltip: 'Atrás',
       icon: const Icon(Icons.arrow_back_ios_rounded),
     );
@@ -42,10 +66,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovie(
-          query), //Eso nos permitirá ingresar el método Future cada que
-      //escribimos
+
+    _onQueryChanged(query);
+
+    return StreamBuilder(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
         return ListView.builder(
@@ -53,7 +78,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           itemBuilder: (context, index) {
             final movie = movies[index];
             return ListTile(
-              onTap: () {},
+              onTap: () {
+                clearStreams();
+                close(context, movie);
+              },
               leading: movie.posterPath == 'no-poster'
                   ? const Icon(Icons.image_not_supported_outlined,
                       color: Colors.white)
@@ -62,8 +90,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
                       fit: BoxFit.cover,
                     ),
               title: Text(movie.title),
-              subtitle: Text(movie.overview,
-                  maxLines: 3, overflow: TextOverflow.ellipsis),
+              subtitle: Text(
+                movie.overview,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
             );
           },
         );
